@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna Diack — IT Project Manager & Digital Solutions</title>
+<meta name="description" content="Anna Diack — IT Project Manager & Digital Solutions Analyst. Portfolio of digital transformation, agile delivery, and technical projects.">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --bg-alt: #0d1219;
+    --surface: #131a24;
+    --surface-hover: #182231;
+    --border: #202b3a;
+    --text: #e6edf3;
+    --text-muted: #8b98a9;
+    --text-dim: #5c6b7f;
+    --accent: #4fe3c1;
+    --accent-2: #7c9bff;
+    --mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', Consolas, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, Helvetica, Arial, sans-serif;
+    --max-w: 1080px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(79,227,193,0.07), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(124,155,255,0.06), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap{ max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+  code, .mono{ font-family: var(--mono); }
+
+  /* NAV */
+  nav{
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,20,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 64px;
+  }
+  .logo{
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+    letter-spacing: 0.5px;
+  }
+  .logo span{ color: var(--accent); }
+  .nav-links{
+    display:flex; align-items:center; gap: 28px;
+    list-style:none;
+  }
+  .nav-links a{
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    position: relative;
+    padding: 4px 0;
+    transition: color .2s;
+  }
+  .nav-links a:hover, .nav-links a.active{ color: var(--accent); }
+  .nav-cta{
+    border: 1px solid var(--border);
+    padding: 8px 16px !important;
+    border-radius: 6px;
+    color: var(--text) !important;
+    font-size: 0.85rem !important;
+  }
+  .nav-cta:hover{ border-color: var(--accent); color: var(--accent) !important; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer; }
+
+  @media (max-width: 720px){
+    .nav-links{
+      position: fixed; top: 64px; left:0; right:0;
+      flex-direction: column; align-items: flex-start;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px; gap: 18px;
+      transform: translateY(-150%);
+      transition: transform .25s ease;
+    }
+    .nav-links.open{ transform: translateY(0); }
+    .nav-toggle{ display:block; }
+  }
+
+  section{ position: relative; z-index: 1; padding: 96px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type{ border-bottom: none; }
+
+  .eyebrow{
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:"//"; color: var(--text-dim); }
+
+  h1,h2,h3{ font-weight: 650; letter-spacing: -0.02em; }
+  h2{ font-size: 2rem; margin-bottom: 40px; }
+
+  /* HERO */
+  .hero{
+    min-height: 92vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top: 60px; padding-bottom: 60px;
+  }
+  .hero .eyebrow{ animation: fadeUp .6s ease both; }
+  .hero h1{
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 18px;
+    animation: fadeUp .6s ease .08s both;
+  }
+  .hero h1 .highlight{
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .role{
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    animation: fadeUp .6s ease .16s both;
+  }
+  .hero .tagline{
+    max-width: 620px;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin-bottom: 36px;
+    animation: fadeUp .6s ease .24s both;
+  }
+  .hero-actions{ display:flex; gap:16px; flex-wrap:wrap; animation: fadeUp .6s ease .32s both; }
+
+  .btn{
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    padding: 13px 24px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display:inline-flex; align-items:center; gap:8px;
+    transition: all .2s ease;
+  }
+  .btn-primary{
+    background: var(--accent);
+    color: #06110e;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover{ box-shadow: 0 0 0 4px rgba(79,227,193,0.15); transform: translateY(-1px); }
+  .btn-ghost{ color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--accent); color: var(--accent); }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible{ opacity:1; transform: translateY(0); }
+
+  /* ABOUT */
+  .about-grid{
+    display:grid; grid-template-columns: 1.4fr 1fr; gap: 56px;
+  }
+  .about-text p{ color: var(--text-muted); margin-bottom: 16px; }
+  .about-text p strong{ color: var(--text); font-weight: 600; }
+  .facts{ display:flex; flex-direction:column; gap:22px; }
+  .fact-block .fact-label{
+    font-family: var(--mono); font-size: 0.78rem; color: var(--accent);
+    letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase;
+  }
+  .fact-block div.fact-value, .fact-block ul{ color: var(--text-muted); font-size: 0.92rem; }
+  .fact-block ul{ list-style:none; }
+  .fact-block li{ padding: 2px 0; }
+  .lang-row{ display:flex; justify-content:space-between; max-width:220px; }
+
+  @media (max-width: 800px){
+    .about-grid{ grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* SKILLS */
+  .skills-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px;
+  }
+  .skill-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .skill-card:hover{ border-color: var(--accent); transform: translateY(-3px); }
+  .skill-card h3{
+    font-size: 0.95rem; margin-bottom: 14px; color: var(--text);
+    display:flex; align-items:center; gap:8px;
+  }
+  .skill-card h3::before{
+    content:""; width:8px; height:8px; border-radius:2px; background: var(--accent);
+    display:inline-block;
+  }
+  .skill-card ul{ list-style:none; }
+  .skill-card li{
+    color: var(--text-muted); font-size: 0.88rem; padding: 5px 0;
+    padding-left: 16px; position:relative;
+  }
+  .skill-card li::before{
+    content:"›"; position:absolute; left:0; color: var(--accent-2);
+  }
+
+  /* EXPERIENCE */
+  .timeline{ position:relative; padding-left: 32px; }
+  .timeline::before{
+    content:""; position:absolute; left:6px; top:6px; bottom:6px; width:1px;
+    background: var(--border);
+  }
+  .tl-item{ position:relative; margin-bottom: 44px; }
+  .tl-item:last-child{ margin-bottom:0; }
+  .tl-item::before{
+    content:""; position:absolute; left:-32px; top:6px; width:13px; height:13px;
+    border-radius:50%; background: var(--bg); border: 2px solid var(--accent);
+  }
+  .tl-period{ font-family: var(--mono); color: var(--accent); font-size:0.82rem; margin-bottom:6px; }
+  .tl-role{ font-size: 1.1rem; font-weight:600; margin-bottom:2px; }
+  .tl-org{ color: var(--text-muted); font-size: 0.92rem; margin-bottom:12px; font-family: var(--mono); }
+  .tl-item ul{ list-style:none; }
+  .tl-item li{
+    color: var(--text-muted); font-size: 0.92rem; padding: 4px 0 4px 18px; position:relative;
+  }
+  .tl-item li::before{ content:"—"; position:absolute; left:0; color: var(--text-dim); }
+
+  /* PORTFOLIO */
+  .portfolio-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px;
+  }
+  .project-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    display:flex; flex-direction:column;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+  }
+  .project-card:hover{
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  }
+  .project-tag{
+    font-family: var(--mono); font-size: 0.72rem; color: var(--accent-2);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .project-card h3{ font-size: 1.15rem; margin-bottom: 10px; }
+  .project-card p{ color: var(--text-muted); font-size: 0.92rem; margin-bottom: 18px; flex-grow:1; }
+  .project-stack{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 16px; }
+  .chip{
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted);
+    background: var(--bg-alt); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .project-link{
+    font-family: var(--mono); font-size: 0.85rem; color: var(--accent);
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .project-link:hover{ text-decoration: underline; }
+  .project-link.disabled{ color: var(--text-dim); cursor: default; }
+
+  /* DEMOS */
+  .demos-intro{ color: var(--text-muted); max-width: 640px; margin-bottom: 40px; }
+  .demo-grid{ display:flex; flex-direction:column; gap: 40px; }
+  .demo-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .demo-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 20px 26px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .demo-head h3{ font-size: 1.05rem; }
+  .demo-head p{ color: var(--text-muted); font-size: 0.86rem; margin-top: 4px; }
+  .demo-open{
+    font-family: var(--mono); font-size: 0.8rem; color: var(--accent);
+    border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px;
+    white-space: nowrap;
+  }
+  .demo-open:hover{ border-color: var(--accent); }
+  .demo-frame-wrap{
+    position: relative;
+    height: 620px;
+    background: var(--bg-alt);
+  }
+  .demo-frame-wrap iframe{
+    width: 100%; height: 100%; border: 0; display:block;
+  }
+  .demo-placeholder{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction: column; gap: 10px;
+    color: var(--text-dim); font-family: var(--mono); font-size: 0.85rem;
+    transition: opacity .3s ease;
+  }
+  .demo-placeholder .spinner{
+    width:22px; height:22px; border-radius:50%;
+    border: 2px solid var(--border); border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  @media (max-width: 700px){
+    .demo-frame-wrap{ height: 480px; }
+  }
+
+  /* CONTACT */
+  .contact-box{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 48px;
+    text-align:center;
+  }
+  .contact-box p{ color: var(--text-muted); max-width: 480px; margin: 0 auto 28px; }
+  .contact-links{ display:flex; justify-content:center; gap:16px; flex-wrap:wrap; }
+
+  footer{
+    padding: 32px 0;
+    text-align:center;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  ::selection{ background: var(--accent); color: #06110e; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo">Anna<span>Diack</span><span style="color:var(--text-dim)">.dev</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#demos">Demos</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="assets/Anna_Diack_CV.pdf" class="nav-cta" target="_blank" rel="noopener">Resume ↓</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">available for new opportunities</div>
+    <h1>Anna Diack — <span class="highlight">Digital&nbsp;Transformation</span>,<br>built by people, process &amp; code.</h1>
+    <div class="role">IT Project Manager &amp; Digital Solutions Analyst</div>
+    <p class="tagline">I lead complex, international digital transformation programs — and get hands-on with the data and code behind them. Currently driving business enablement for a global SAP transformation at Hoffmann-La Roche, supporting 3,000+ end users across Switzerland.</p>
+    <div class="hero-actions">
+      <a href="#portfolio" class="btn btn-primary">View Portfolio</a>
+      <a href="assets/Anna_Diack_CV.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Download CV</a>
+      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow">about</div>
+    <h2>Bridging business, technology &amp; people</h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I'm an <strong>IT Project Manager</strong> with a background in global digital transformation, cross-functional team leadership, and business change in complex, international environments. I'm skilled in project planning, stakeholder management, process improvement, and translating business needs into scalable digital solutions.</p>
+        <p>At <strong>Hoffmann-La Roche</strong>, I currently lead business enablement for the ASPIRE SAP transformation, supporting over 3,000 end users in Switzerland — coordinating stakeholders across business areas, overseeing governance and role mapping, and driving adoption through structured change and knowledge management.</p>
+        <p>My background combines project delivery, agile ways of working, and hands-on digital work in Python, SQL, and data analysis. I enjoy bringing people, process, and technology together to build practical solutions that create measurable business value.</p>
+        <p style="color: var(--text-dim); font-size: 0.85rem;">Currently writing my Master's thesis (2025–2026).</p>
+      </div>
+      <div class="facts reveal">
+        <div class="fact-block">
+          <div class="fact-label">Education</div>
+          <div class="fact-value">MSc Computer Science &amp; Media Science<br>University of Basel</div>
+        </div>
+        <div class="fact-block">
+          <div class="fact-label">Languages</div>
+          <ul>
+            <li class="lang-row"><span>German</span><span>Native</span></li>
+            <li class="lang-row"><span>English</span><span>C2</span></li>
+            <li class="lang-row"><span>French</span><span>A2</span></li>
+          </ul>
+        </div>
+        <div class="fact-block">
+          <div class="fact-label">Based in</div>
+          <div class="fact-value">Switzerland</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="eyebrow">skills</div>
+    <h2>What I bring to the table</h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <h3>Technical</h3>
+        <ul>
+          <li>Python, SQL, JavaScript</li>
+          <li>REST APIs</li>
+          <li>Git</li>
+          <li>AWS (basic)</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal">
+        <h3>Agile &amp; Transformation</h3>
+        <ul>
+          <li>Scrum / SAFe</li>
+          <li>Agile delivery models</li>
+          <li>Global rollout strategies</li>
+          <li>Change management</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal">
+        <h3>Service Delivery &amp; Leadership</h3>
+        <ul>
+          <li>Leading cross-functional teams</li>
+          <li>Internal &amp; external stakeholder management</li>
+          <li>Training strategy &amp; enablement</li>
+          <li>Coaching &amp; knowledge transfer</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal">
+        <h3>Platform &amp; System Governance</h3>
+        <ul>
+          <li>SAP (ASPIRE transformation)</li>
+          <li>Digital platforms &amp; internal tools</li>
+          <li>Workflow design &amp; process alignment</li>
+          <li>Metadata &amp; structured content thinking</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal">
+        <h3>Digital Content &amp; Operations</h3>
+        <ul>
+          <li>Digital service design &amp; scaling</li>
+          <li>Content operations &amp; delivery models</li>
+          <li>Process optimization &amp; governance</li>
+          <li>KPI tracking &amp; reporting</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="eyebrow">experience</div>
+    <h2>Where I've made an impact</h2>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-period">MAY 2024 — JULY 2025</div>
+        <div class="tl-role">IT Project Manager — Business Enablement, ASPIRE (SAP Transformation)</div>
+        <div class="tl-org">Hoffmann-La Roche</div>
+        <ul>
+          <li>Managed training for over 3,000 end users in Switzerland</li>
+          <li>Coordinated training content and learning materials across multiple teams</li>
+          <li>Led the Train-the-Trainer program for consistent knowledge transfer</li>
+          <li>Supported role mapping through effective stakeholder management</li>
+        </ul>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-period">2022 — 2024</div>
+        <div class="tl-role">IT Project Manager, Diabetes Care</div>
+        <div class="tl-org">Hoffmann-La Roche</div>
+        <ul>
+          <li>Led cross-functional teams in Indianapolis, San Cugat, and the UK as Scrum Master</li>
+          <li>Managed development of a REST API harmonization tool for the learning department</li>
+          <li>Implemented agile methodologies to improve project workflows and collaboration</li>
+          <li>Gathered requirements and delivered software solutions within budget constraints</li>
+        </ul>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-period">2020 — 2022</div>
+        <div class="tl-role">Digitization Project Manager</div>
+        <div class="tl-org">University of Basel</div>
+        <ul>
+          <li>Led Swiss-wide digitization order processing</li>
+          <li>Oversaw digitization, sorting, post-processing, and metadata creation</li>
+          <li>Implemented agile methodologies to improve workflows and collaboration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="wrap">
+    <div class="eyebrow">portfolio</div>
+    <h2>Selected projects</h2>
+    <div class="portfolio-grid">
+
+      <div class="project-card reveal">
+        <div class="project-tag">Digital Transformation</div>
+        <h3>ASPIRE — SAP Business Enablement</h3>
+        <p>Led business enablement for a global SAP transformation program, driving adoption across 3,000+ end users in Switzerland through structured governance, role mapping, and a Train-the-Trainer knowledge model.</p>
+        <div class="project-stack">
+          <span class="chip">SAP</span>
+          <span class="chip">Change Management</span>
+          <span class="chip">Stakeholder Mgmt</span>
+        </div>
+        <span class="project-link disabled">Confidential enterprise project</span>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-tag">Software Delivery</div>
+        <h3>REST API Harmonization Tool</h3>
+        <p>Directed the development of a REST API harmonization tool for the learning department, leading cross-functional teams across Indianapolis, San Cugat, and the UK as Scrum Master.</p>
+        <div class="project-stack">
+          <span class="chip">REST APIs</span>
+          <span class="chip">Scrum</span>
+          <span class="chip">Agile Delivery</span>
+        </div>
+        <span class="project-link disabled">Confidential enterprise project</span>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-tag">Bioinformatics · Independent</div>
+        <h3>BRCA1 Mutation Analysis</h3>
+        <p>An autoencoder-based pipeline to cluster BRCA1 mutation reads for haplotype analysis — combining deep learning, dimensionality reduction (t-SNE), and k-means clustering on population genetics data.</p>
+        <div class="project-stack">
+          <span class="chip">Python</span>
+          <span class="chip">Autoencoders</span>
+          <span class="chip">t-SNE / k-means</span>
+        </div>
+        <a href="https://github.com/annadiack/BRCA1-Project" class="project-link" target="_blank" rel="noopener">View on GitHub →</a>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-tag">Process &amp; Operations</div>
+        <h3>Swiss-Wide Digitization Program</h3>
+        <p>Led nationwide processing of digitization orders — from digitization and sorting to post-processing and metadata creation — implementing agile workflows across teams.</p>
+        <div class="project-stack">
+          <span class="chip">Metadata</span>
+          <span class="chip">Process Design</span>
+          <span class="chip">Agile Workflows</span>
+        </div>
+        <span class="project-link disabled">University of Basel project</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="demos">
+  <div class="wrap">
+    <div class="eyebrow">web design &amp; development</div>
+    <h2>Live demos, embedded</h2>
+    <p class="demos-intro">A few frontend / interactive builds — scroll inside each preview to explore, or open one fullscreen. These live in this same repository, so they publish together with the rest of the site.</p>
+    <div class="demo-grid">
+
+      <div class="demo-card reveal">
+        <div class="demo-head">
+          <div>
+            <h3>Property — Cinematic Scroll Website</h3>
+            <p>Real-estate showcase with a frame-by-frame scroll-driven camera flythrough.</p>
+          </div>
+          <a href="demos/property/index.html" class="demo-open" target="_blank" rel="noopener">Open fullscreen ↗</a>
+        </div>
+        <div class="demo-frame-wrap" data-demo>
+          <div class="demo-placeholder"><div class="spinner"></div>scroll to load preview</div>
+          <iframe data-src="demos/property/index.html" title="Property website demo" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <div class="demo-card reveal">
+        <div class="demo-head">
+          <div>
+            <h3>Sony WH-1000XM6 — Product Scrollytelling</h3>
+            <p>Scroll-scrubbed product story site built around a rendered frame sequence.</p>
+          </div>
+          <a href="demos/sony/index.html" class="demo-open" target="_blank" rel="noopener">Open fullscreen ↗</a>
+        </div>
+        <div class="demo-frame-wrap" data-demo>
+          <div class="demo-placeholder"><div class="spinner"></div>scroll to load preview</div>
+          <iframe data-src="demos/sony/index.html" title="Sony WH-1000XM6 demo" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <div class="demo-card reveal">
+        <div class="demo-head">
+          <div>
+            <h3>Aurelis — Eau de Parfum</h3>
+            <p>Editorial brand site with embedded video journey and scroll transitions.</p>
+          </div>
+          <a href="demos/aurelis/index.html" class="demo-open" target="_blank" rel="noopener">Open fullscreen ↗</a>
+        </div>
+        <div class="demo-frame-wrap" data-demo>
+          <div class="demo-placeholder"><div class="spinner"></div>scroll to load preview</div>
+          <iframe data-src="demos/aurelis/index.html" title="Aurelis parfum demo" loading="lazy"></iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="eyebrow">contact</div>
+    <h2>Let's talk</h2>
+    <div class="contact-box reveal">
+      <p>Open to new opportunities in digital transformation, project management, and technology-driven roles. Feel free to reach out directly or connect on LinkedIn.</p>
+      <div class="contact-links">
+        <a href="mailto:anna.diack@icloud.com" class="btn btn-primary">Email Me</a>
+        <a href="https://www.linkedin.com/in/anna-diack-72673b130/" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/annadiack" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        <a href="assets/Anna_Diack_CV.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Download CV</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Anna Diack — built with care.</div>
+</footer>
+
+<script>
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // lazy-load embedded demo iframes only once scrolled near
+  const demoWraps = document.querySelectorAll('[data-demo]');
+  const demoIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const wrap = entry.target;
+        const iframe = wrap.querySelector('iframe');
+        const placeholder = wrap.querySelector('.demo-placeholder');
+        if(iframe && !iframe.src){
+          iframe.src = iframe.getAttribute('data-src');
+          iframe.addEventListener('load', () => { if(placeholder) placeholder.style.opacity = '0'; }, { once:true });
+        }
+        demoIo.unobserve(wrap);
+      }
+    });
+  }, { rootMargin: '200px 0px' });
+  demoWraps.forEach(w => demoIo.observe(w));
+
+  // active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navA = document.querySelectorAll('.nav-links a[href^="#"]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 100;
+      if(window.scrollY >= top) current = sec.getAttribute('id');
+    });
+    navA.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>

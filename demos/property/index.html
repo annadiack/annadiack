@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lugano Demo — Villentour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0C;
+    --bg2:#0F0F12;
+    --warm-glow:#151109;
+    --heading:rgba(255,255,255,0.92);
+    --body-c:rgba(255,255,255,0.62);
+    --accent:#C9A876;
+    --accent2:#E8D9BE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{ background:var(--bg); }
+  body{
+    background:var(--bg);
+    color:var(--heading);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    overflow-x:clip;
+  }
+  ::selection{ background:var(--accent); color:#0A0A0C; }
+  .serif{ font-family:'Cormorant Garamond', serif; }
+
+  /* ---------- Loader ---------- */
+  #loader{
+    position:fixed; inset:0; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    z-index:9999; transition:opacity .8s ease;
+  }
+  #loader .lp-name{ font-size:14px; letter-spacing:.3em; text-transform:uppercase; color:var(--body-c); margin-bottom:18px; }
+  #loader .lp-bar{ width:220px; height:1px; background:rgba(255,255,255,.15); position:relative; overflow:hidden; }
+  #loader .lp-fill{ position:absolute; left:0; top:0; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+  #loader .lp-pct{ margin-top:14px; font-size:11px; letter-spacing:.15em; color:var(--body-c); }
+  #loader.hide{ opacity:0; pointer-events:none; }
+
+  /* ---------- Navbar ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:500;
+    height:76px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 40px;
+    background:rgba(10,10,12,0);
+    backdrop-filter:blur(0px);
+    -webkit-backdrop-filter:blur(0px);
+    border-bottom:1px solid rgba(255,255,255,0);
+    transition:background .5s ease, backdrop-filter .5s ease, border-color .5s ease;
+  }
+  nav.scrolled{
+    background:rgba(10,10,12,0.75);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  nav .logo{ font-size:15px; letter-spacing:.15em; font-weight:500; text-transform:uppercase; }
+  nav .links{ display:flex; gap:32px; list-style:none; }
+  nav .links a{
+    color:var(--body-c); text-decoration:none; font-size:13px; letter-spacing:.04em;
+    position:relative; transition:color .3s ease;
+  }
+  nav .links a::after{
+    content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px;
+    background:var(--accent); transition:width .3s ease;
+  }
+  nav .links a:hover{ color:var(--heading); }
+  nav .links a:hover::after{ width:100%; }
+  nav .cta{
+    font-size:12.5px; letter-spacing:.05em; color:var(--heading); text-decoration:none;
+    padding:10px 22px; border-radius:999px;
+    border:1px solid transparent;
+    background:linear-gradient(rgba(10,10,12,.9),rgba(10,10,12,.9)) padding-box,
+               linear-gradient(120deg,var(--accent),var(--accent2)) border-box;
+    transition:box-shadow .35s ease, transform .25s ease;
+  }
+  nav .cta:hover{ box-shadow:0 0 24px rgba(201,168,118,.35); transform:translateY(-1px); }
+  @media(max-width:900px){ nav .links{ display:none; } }
+
+  /* ---------- Pinned sequence section ---------- */
+  .pin-wrapper{ position:relative; height:700vh; }
+  .pin-inner{
+    position:sticky; top:0; height:100vh; width:100%;
+    overflow:hidden; background:var(--bg);
+  }
+  canvas#seq{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+  .vignette{ position:absolute; left:0; right:0; height:20vh; pointer-events:none; z-index:5; }
+  .vignette.top{ top:0; background:linear-gradient(to bottom, var(--bg) 0%, rgba(10,10,12,0) 100%); }
+  .vignette.bottom{ bottom:0; background:linear-gradient(to top, var(--bg) 0%, rgba(10,10,12,0) 100%); }
+  .vignette.side-l{ position:absolute; top:0; bottom:0; left:0; width:12vw; background:linear-gradient(to right, var(--bg) 0%, rgba(10,10,12,0) 100%); }
+  .vignette.side-r{ position:absolute; top:0; bottom:0; right:0; width:12vw; background:linear-gradient(to left, var(--bg) 0%, rgba(10,10,12,0) 100%); }
+
+  .radial-glow{
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 42%, rgba(21,17,9,0) 0%, rgba(10,10,12,.4) 82%);
+  }
+
+  /* ---------- Story text blocks ---------- */
+  .story{
+    position:absolute; top:0; left:0; right:0; height:100%;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 8vw; z-index:10; opacity:0; pointer-events:none;
+  }
+  .story .eyebrow{ font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--accent2); margin-bottom:16px; opacity:.85; }
+  .story h1, .story h2{
+    font-weight:600; line-height:1.06; letter-spacing:-0.02em;
+    font-size:clamp(32px,4.8vw,68px);
+    background:linear-gradient(180deg, #ffffff 45%, var(--accent2) 130%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:18px;
+    text-shadow:0 0 60px rgba(0,0,0,.35);
+  }
+  .story p{ font-size:16.5px; line-height:1.65; color:var(--body-c); max-width:460px; margin-bottom:7px; font-weight:300; }
+  .story.align-center{ align-items:center; text-align:center; }
+  .story.align-center h1, .story.align-center h2{ max-width:780px; }
+  .story.align-center p{ margin-left:auto; margin-right:auto; }
+  .story.align-left{ align-items:flex-start; text-align:left; }
+  .story.align-right{ align-items:flex-end; text-align:right; }
+  .story.align-right p{ margin-left:auto; }
+
+  .story .btn-row{ display:flex; gap:16px; margin-top:26px; pointer-events:auto; flex-wrap:wrap; justify-content:inherit; }
+  .btn-primary{
+    display:inline-block; font-size:13.5px; letter-spacing:.04em; color:#0A0A0C; font-weight:600;
+    padding:15px 32px; border-radius:999px; text-decoration:none;
+    background:linear-gradient(120deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 30px rgba(201,168,118,.25);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 36px rgba(201,168,118,.4); }
+  .btn-secondary{
+    display:inline-flex; align-items:center; font-size:13.5px; letter-spacing:.04em; color:var(--heading);
+    text-decoration:none; padding:15px 6px; border-bottom:1px solid rgba(255,255,255,.3);
+    transition:border-color .25s ease, color .25s ease;
+  }
+  .btn-secondary:hover{ border-color:var(--accent2); color:var(--accent2); }
+
+  /* ---------- Progress + hint ---------- */
+  .progress-rail{ position:absolute; right:26px; top:50%; transform:translateY(-50%); width:2px; height:220px; background:rgba(255,255,255,.12); z-index:20; border-radius:2px; }
+  .progress-rail .fill{ position:absolute; left:0; top:0; width:100%; height:0%; background:linear-gradient(180deg,var(--accent),var(--accent2)); border-radius:2px; }
+  .progress-rail .ticks{ position:absolute; inset:0; }
+  .progress-rail .tick{ position:absolute; left:-3px; width:8px; height:1px; background:rgba(255,255,255,.35); }
+  @media(max-width:700px){ .progress-rail{ display:none; } }
+
+  .scroll-hint{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--body-c);
+    z-index:20; display:flex; flex-direction:column; align-items:center; gap:10px;
+    transition:opacity .5s ease;
+  }
+  .scroll-hint .line{ width:1px; height:34px; background:linear-gradient(var(--accent2), transparent); animation:hint-move 1.8s ease-in-out infinite; }
+  @keyframes hint-move{ 0%{ transform:scaleY(0); transform-origin:top;} 50%{ transform:scaleY(1); transform-origin:top;} 51%{ transform-origin:bottom;} 100%{ transform:scaleY(0); transform-origin:bottom;} }
+
+  .load-warning{
+    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+    font-size:11.5px; color:#ffb4b4; background:rgba(10,10,12,.8); border:1px solid rgba(255,120,120,.3);
+    padding:8px 16px; border-radius:8px; z-index:30; display:none;
+  }
+
+  /* ---------- Footer CTA section ---------- */
+  .final-cta{
+    position:relative; min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:120px 24px; background:radial-gradient(ellipse at 50% 20%, var(--warm-glow) 0%, var(--bg) 65%);
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .final-cta .eyebrow{ font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--accent2); margin-bottom:22px;}
+  .final-cta h2{
+    font-size:clamp(30px,4.4vw,58px); font-weight:600; letter-spacing:-.02em; margin-bottom:18px;
+    background:linear-gradient(180deg,#fff 40%,var(--accent2) 140%); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .final-cta p{ color:var(--body-c); max-width:520px; margin:0 auto 36px; font-weight:300; font-size:16px; line-height:1.6; }
+  .final-cta .btn-row{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+  footer.legal{ text-align:center; padding:32px; font-size:12px; color:rgba(255,255,255,.35); }
+</style>
+</head>
+<body>
+
+  <div id="loader">
+    <div class="lp-name">Lugano Home wird geladen</div>
+    <div class="lp-bar"><div class="lp-fill" id="lpFill"></div></div>
+    <div class="lp-pct" id="lpPct">0%</div>
+  </div>
+
+  <nav id="nav">
+    <div class="logo">Lugano Home</div>
+    <ul class="links">
+      <li><a href="#hero">Rundgang</a></li>
+      <li><a href="#living">Wohnen</a></li>
+      <li><a href="#bedroom">Schlafen</a></li>
+      <li><a href="#spa">Bad &amp; Spa</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+    <a class="cta" href="#kontakt">Besichtigung anfragen</a>
+  </nav>
+
+  <section class="pin-wrapper" id="hero">
+    <div class="pin-inner">
+      <canvas id="seq"></canvas>
+      <div class="radial-glow"></div>
+      <div class="vignette top"></div>
+      <div class="vignette bottom"></div>
+      <div class="vignette side-l"></div>
+      <div class="vignette side-r"></div>
+
+      <!-- 1. HERO -->
+      <div class="story align-center" data-idx="0">
+        <div class="eyebrow">Video-Rundgang</div>
+        <h1>Lugano Home</h1>
+        <p>Wohnen über dem See — modern, zurückgezogen, mit einem Blick, der bleibt.</p>
+      </div>
+
+      <!-- 2. TERRACE & POOL -->
+      <div class="story align-left" data-idx="1">
+        <div class="eyebrow">Aussenbereich</div>
+        <h2>Der Tag beginnt<br>am Pool.</h2>
+        <p>Beheizter Pool, grosszügige Loungebereiche und ein Garten direkt am Wasser.</p>
+        <p>Freie Sicht auf See und Berge — geschützt und privat.</p>
+      </div>
+
+      <!-- 3. LIVING / KITCHEN / DINING -->
+      <div class="story align-right" data-idx="2" id="living">
+        <div class="eyebrow">Wohnen &amp; Küche</div>
+        <h2>Ein Raum, der<br>alles verbindet.</h2>
+        <p>Offene Küche, Essbereich und Lounge gehen fliessend ineinander über.</p>
+        <p>Raumhohe Schiebetüren holen Terrasse und See ins Wohnzimmer.</p>
+        <p>Der Kamin setzt den Mittelpunkt für lange Abende.</p>
+      </div>
+
+      <!-- 4. BEDROOM -->
+      <div class="story align-left" data-idx="3" id="bedroom">
+        <div class="eyebrow">Rückzugsort</div>
+        <h2>Aufwachen mit<br>Aussicht.</h2>
+        <p>Das Hauptschlafzimmer öffnet sich zum Panorama aus See und Bergen.</p>
+        <p>Warme Materialien, indirektes Licht, absolute Ruhe.</p>
+      </div>
+
+      <!-- 5. VIEW -->
+      <div class="story align-right" data-idx="4">
+        <div class="eyebrow">Ausblick</div>
+        <h2>Der See ist<br>immer da.</h2>
+        <p>Vom Bett bis zur Terrasse — die Aussicht begleitet jeden Raum im Haus.</p>
+      </div>
+
+      <!-- 6. BATH & SAUNA -->
+      <div class="story align-left" data-idx="5" id="spa">
+        <div class="eyebrow">Spa &amp; Wellness</div>
+        <h2>Ein eigenes Spa,<br>jeden Tag.</h2>
+        <p>Freistehende Badewanne, Doppelwaschtisch und eine private Sauna.</p>
+        <p>Naturstein und Holz, bis ins letzte Detail durchdacht.</p>
+        <p>Wellness, ohne das Haus zu verlassen.</p>
+      </div>
+
+      <!-- 7. FINAL / CTA -->
+      <div class="story align-center" data-idx="6">
+        <div class="eyebrow">[Standort]</div>
+        <h2>Selbst erleben.</h2>
+        <p>Lugano Home. [Standort]. Jetzt verfügbar.</p>
+        <div class="btn-row">
+          <a class="btn-primary" href="#kontakt">Besichtigung anfragen</a>
+          <a class="btn-secondary" href="#kontakt">Grundriss ansehen →</a>
+        </div>
+      </div>
+
+      <div class="progress-rail"><div class="fill" id="railFill"></div></div>
+      <div class="scroll-hint" id="scrollHint"><span>Scroll</span><span class="line"></span></div>
+      <div class="load-warning" id="loadWarning"></div>
+    </div>
+  </section>
+
+  <section class="final-cta" id="kontakt">
+    <div class="eyebrow">Private Besichtigung</div>
+    <h2>Vereinbaren Sie<br>Ihren Termin.</h2>
+    <p>Persönliche Besichtigungen nach Vereinbarung. [Agenturname] begleitet Sie durch Lugano Home — vor Ort oder virtuell.</p>
+    <div class="btn-row">
+      <a class="btn-primary" href="mailto:kontakt@beispiel.de">Besichtigung anfragen</a>
+      <a class="btn-secondary" href="#hero">Zurück zum Rundgang →</a>
+    </div>
+  </section>
+
+  <footer class="legal">© [Jahr] [Agenturname]. Alle Angaben ohne Gewähr.</footer>
+
+<script>
+(function(){
+  const FRAME_COUNT = 240;
+  const FRAME_PATH = i => `frames/frame_${String(i).padStart(4,'0')}.jpg`;
+
+  const canvas = document.getElementById('seq');
+  const ctx = canvas.getContext('2d');
+  const wrapper = document.getElementById('hero');
+  const nav = document.getElementById('nav');
+  const railFill = document.getElementById('railFill');
+  const scrollHint = document.getElementById('scrollHint');
+  const lpFill = document.getElementById('lpFill');
+  const lpPct = document.getElementById('lpPct');
+  const loader = document.getElementById('loader');
+  const loadWarning = document.getElementById('loadWarning');
+  const stories = Array.from(document.querySelectorAll('.story'));
+
+  const images = new Array(FRAME_COUNT).fill(null);
+  let attempted = 0;
+  let succeeded = 0;
+  let lastGoodIdx = -1;
+
+  // --- robust single-image loader: waits for full decode, never hangs ---
+  function loadOne(i){
+    return new Promise((resolve)=>{
+      const img = new Image();
+      img.decoding = 'async';
+      let settled = false;
+      const done = (ok)=>{
+        if(settled) return;
+        settled = true;
+        attempted++;
+        if(ok){ succeeded++; images[i-1] = img; }
+        lpFill.style.width = Math.round((attempted/FRAME_COUNT)*100) + '%';
+        lpPct.textContent = Math.round((attempted/FRAME_COUNT)*100) + '%';
+        resolve();
+      };
+      img.onload = ()=>{
+        if(img.decode){
+          img.decode().then(()=>done(true)).catch(()=>done(true));
+        } else {
+          done(true);
+        }
+      };
+      img.onerror = ()=>done(false);
+      img.src = FRAME_PATH(i);
+      // safety timeout so one stuck request can never block the whole page
+      setTimeout(()=>done(img.complete && img.naturalWidth>0), 8000);
+    });
+  }
+
+  async function preloadAll(){
+    const CONCURRENCY = 12;
+    let next = 1;
+    async function worker(){
+      while(next <= FRAME_COUNT){
+        const i = next++;
+        await loadOne(i);
+      }
+    }
+    const workers = [];
+    for(let w=0; w<CONCURRENCY; w++) workers.push(worker());
+    await Promise.all(workers);
+  }
+
+  function resizeCanvas(force){
+    const w = window.innerWidth, h = window.innerHeight;
+    if(!force && canvas.width === w && Math.abs(canvas.height - h) < 80) return;
+    canvas.width = w;
+    canvas.height = h;
+  }
+
+  // find nearest loaded frame to idx so the canvas is NEVER left blank
+  function resolveDrawableIndex(idx){
+    if(images[idx]) return idx;
+    for(let d=1; d<FRAME_COUNT; d++){
+      if(idx-d>=0 && images[idx-d]) return idx-d;
+      if(idx+d<FRAME_COUNT && images[idx+d]) return idx+d;
+    }
+    return -1;
+  }
+
+  function drawFrame(idx){
+    const useIdx = resolveDrawableIndex(idx);
+    if(useIdx === -1) return;
+    lastGoodIdx = useIdx;
+    const img = images[useIdx];
+    const cw = canvas.width, ch = canvas.height;
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const scale = Math.max(cw/iw, ch/ih);
+    const dw = iw*scale, dh = ih*scale;
+    const dx = (cw-dw)/2, dy = (ch-dh)/2;
+    ctx.clearRect(0,0,cw,ch);
+    ctx.filter = 'contrast(1.06) saturate(1.12) brightness(1.02)';
+    ctx.drawImage(img, dx, dy, dw, dh);
+    ctx.filter = 'none';
+  }
+
+  // story beat bands [start,end] as fraction of scroll progress — matched to actual footage
+  const bands = [
+    [0.00, 0.10], // hero / pool establishing
+    [0.10, 0.19], // terrace & pool
+    [0.19, 0.44], // living / kitchen / dining
+    [0.44, 0.60], // bedroom
+    [0.60, 0.71], // panoramic view
+    [0.71, 0.92], // bath & sauna
+    [0.92, 1.00]  // final / cta
+  ];
+  const FADE = 0.035;
+
+  function bandOpacity(p, start, end){
+    if(p < start - FADE || p > end + FADE) return 0;
+    if(p < start) return (p-(start-FADE))/FADE;
+    if(p > end) return 1-((p-end)/FADE);
+    return 1;
+  }
+
+  let ticking = false;
+  function onScroll(){
+    if(!ticking){ requestAnimationFrame(update); ticking = true; }
+  }
+
+  function update(){
+    ticking = false;
+    const rect = wrapper.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    let progress = total > 0 ? (-rect.top)/total : 0;
+    progress = Math.min(Math.max(progress, 0), 1);
+
+    const idx = Math.round(progress * (FRAME_COUNT-1));
+    drawFrame(idx);
+
+    railFill.style.height = (progress*100) + '%';
+    scrollHint.style.opacity = progress > 0.02 ? '0' : '1';
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+
+    stories.forEach((el, i)=>{
+      const band = bands[i];
+      if(!band) return;
+      const [s,e] = band;
+      const o = bandOpacity(progress, s, e);
+      el.style.opacity = o;
+      el.style.pointerEvents = o > 0.6 ? 'auto' : 'none';
+      const shift = (1-o) * 22;
+      const dir = el.classList.contains('align-left') ? -1 : el.classList.contains('align-right') ? 1 : 0;
+      el.style.transform = dir === 0 ? `translateY(${shift}px)` : `translateX(${dir*shift}px)`;
+    });
+  }
+
+  window.addEventListener('resize', ()=>{ resizeCanvas(); update(); });
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  resizeCanvas(true);
+  preloadAll().then(()=>{
+    if(succeeded < FRAME_COUNT){
+      const failed = FRAME_COUNT - succeeded;
+      loadWarning.textContent = `${failed} von ${FRAME_COUNT} Bildern konnten nicht geladen werden — prüfe, ob der Ordner "frames" neben index.html liegt.`;
+      loadWarning.style.display = succeeded === 0 ? 'block' : (failed > FRAME_COUNT*0.1 ? 'block' : 'none');
+    }
+    loader.classList.add('hide');
+    update();
+  });
+})();
+</script>
+</body>
+</html>
